@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class PostSurveyDto {
+public class SurveyDtoPost {
     @JsonProperty("title")
     private String title;
     @JsonProperty("questions")

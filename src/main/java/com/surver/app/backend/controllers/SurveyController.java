@@ -1,12 +1,14 @@
 package com.surver.app.backend.controllers;
 
-import com.surver.app.backend.dto.PostSurveyDto;
+import com.surver.app.backend.dto.AnswerDtoPost;
 import com.surver.app.backend.dto.SurveyDto;
+import com.surver.app.backend.dto.SurveyDtoPost;
 import com.surver.app.backend.dto.SurveysDto;
 import com.surver.app.backend.entity.Answer;
 import com.surver.app.backend.entity.Question;
 import com.surver.app.backend.entity.Survey;
 import com.surver.app.backend.mappers.SurveyAppDtoMapper;
+import com.surver.app.backend.services.AnswerService;
 import com.surver.app.backend.services.QuestionService;
 import com.surver.app.backend.services.SurveyService;
 import jakarta.annotation.PostConstruct;
@@ -26,24 +28,25 @@ public class SurveyController {
     private SurveyAppDtoMapper mapper;
     private QuestionService questionService;
     private SurveyService surveyService;
+    private AnswerService answerService;
 
-    public SurveyController(SurveyAppDtoMapper mapper, QuestionService questionService, SurveyService surveyService) {
+    public SurveyController(SurveyAppDtoMapper mapper, QuestionService questionService, SurveyService surveyService, AnswerService answerService) {
         this.mapper = mapper;
         this.questionService = questionService;
         this.surveyService = surveyService;
+        this.answerService = answerService;
     }
-
 
     @GetMapping("/findAll")
     public ResponseEntity<SurveysDto> findAll() {
-        return new ResponseEntity<>(mapper.surveysToListDtoSlim(surveyService.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.mapSurveysToListDtoSlim(surveyService.findAll()), HttpStatus.OK);
     }
 
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<SurveyDto> findById(@PathVariable Long id) {
         if (surveyService.findById(id) == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(mapper.surveyToDto(surveyService.findById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.mapSurveyToDto(surveyService.findById(id)), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -56,26 +59,29 @@ public class SurveyController {
 
     @DeleteMapping("/delete-question/{id}")
     public ResponseEntity<String> deleteQuestion(@PathVariable Long id) {
-        if(questionService.findById(id) == null) return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+        if (questionService.findById(id) == null) return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
         questionService.deleteById(id);
         return new ResponseEntity<>("Completed", HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public void addNewSurvey(@RequestBody  PostSurveyDto survey) {
-        surveyService.addSurvey(mapper.mapSurveyDtoToSurvey(survey));
+    public void addNewSurvey(@RequestBody SurveyDtoPost survey) {
+        surveyService.addSurvey(mapper.mapSurveyDtoPostToSurvey(survey));
     }
 
     @PostMapping("/update")
     public void updateSurvey(@RequestBody SurveyDto survey) {
-        Survey temp = surveyService.findById(survey.getId());
-        temp.setTitle(survey.getTitle());
-        Set<Question> questions = mapper.mapQuestionDtoListToQuestionList(survey.getQuestions(), temp);
-        temp.setQuestions(questions);
-        surveyService.updateSurvey(temp);
+        surveyService.updateSurvey(mapper.mapSurveyDtoToSurvey(survey));
     }
 
-//    @PostConstruct
+    @PostMapping("/{surveyId}/add-answers")
+    public void addAnswers(@RequestBody List<AnswerDtoPost> answers, @PathVariable Long surveyId) {
+        Survey survey = surveyService.findById(surveyId);
+        List<Answer> temp = mapper.mapAnswerDtoPostListToAnswer(answers, survey);
+        answerService.addAllAnswers(temp);
+    }
+
+//        @PostConstruct
     public void setUp() {
         Question q1 = new Question("How Are You?");
         List<Answer> a1 = new ArrayList<>();

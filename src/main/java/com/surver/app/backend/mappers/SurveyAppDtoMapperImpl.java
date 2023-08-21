@@ -13,11 +13,11 @@ import java.util.*;
 public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
 
     @Override
-    public SurveysDto surveysToListDtoSlim(List<Survey> surveys) {
+    public SurveysDto mapSurveysToListDtoSlim(List<Survey> surveys) {
         if (surveys == null) return null;
         List<SurveySlimDto> temp = new ArrayList<>(surveys.size());
         for (Survey s : surveys) {
-            temp.add(surveyToDtoSlim(s));
+            temp.add(mapSurveyToDtoSlim(s));
         }
         SurveysDto surveysDto = new SurveysDto();
         surveysDto.setSurveys(temp);
@@ -25,14 +25,14 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
     }
 
     @Override
-    public SurveySlimDto surveyToDtoSlim(Survey survey) {
+    public SurveySlimDto mapSurveyToDtoSlim(Survey survey) {
         if (survey == null) return null;
         SurveySlimDto temp = new SurveySlimDto();
         temp.setId(survey.getId());
         temp.setName(survey.getTitle());
         Set<QuestionSlimDto> questionSlimDto = new HashSet<>(survey.getQuestions().size());
         for (Question q : survey.getQuestions()) {
-            questionSlimDto.add(questionToDtoSlim(q));
+            questionSlimDto.add(mapQuestionToDtoSlim(q));
         }
         temp.setQuestions(questionSlimDto);
         return temp;
@@ -40,7 +40,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
 
 
     @Override
-    public QuestionSlimDto questionToDtoSlim(Question question) {
+    public QuestionSlimDto mapQuestionToDtoSlim(Question question) {
         if (question == null) return null;
         QuestionSlimDto temp = new QuestionSlimDto();
         temp.setId(question.getId());
@@ -49,7 +49,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
     }
 
     @Override
-    public Survey mapSurveyDtoToSurvey(PostSurveyDto surveyDto) {
+    public Survey mapSurveyDtoPostToSurvey(SurveyDtoPost surveyDto) {
         if (surveyDto == null) return null;
         Survey temp = new Survey();
 
@@ -111,54 +111,85 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
 
 
     @Override
-    public SurveyDto surveyToDto(Survey survey) {
+    public SurveyDto mapSurveyToDto(Survey survey) {
         if (survey == null) return null;
         SurveyDto temp = new SurveyDto();
         temp.setId(survey.getId());
         temp.setTitle(survey.getTitle());
         Set<Question> questions = survey.getQuestions();
-        temp.setQuestions(questionSetToDto(survey.getQuestions(), temp.getId()));
+        temp.setQuestions(mapQuestionSetToDto(survey.getQuestions(), temp.getId()));
         return temp;
 
     }
 
 
     @Override
-    public Set<QuestionDto> questionSetToDto(Set<Question> questions, Long surveyId) {
+    public Set<QuestionDto> mapQuestionSetToDto(Set<Question> questions, Long surveyId) {
         if (questions == null) return Collections.emptySet();
         Set<QuestionDto> questionsDto = new HashSet<>(questions.size());
         for (Question q : questions) {
-            questionsDto.add(questionToDto(q, surveyId));
+            questionsDto.add(mapQuestionToDto(q, surveyId));
         }
         return questionsDto;
     }
 
     @Override
-    public QuestionDto questionToDto(Question question, Long surveyId) {
+    public QuestionDto mapQuestionToDto(Question question, Long surveyId) {
         if (question == null) return null;
         QuestionDto temp = new QuestionDto();
         temp.setId(question.getId());
         temp.setQuestion(question.getQuestion());
         temp.setSurveyId(surveyId);
-        temp.setAnswers(answerListToDto(question.getAnswers(), temp.getId()));
+        temp.setAnswers(mapAnswerListToDto(question.getAnswers(), temp.getId()));
         return temp;
     }
 
     @Override
-    public List<AnswerDto> answerListToDto(List<Answer> answers, Long questionId) {
+    public List<AnswerDto> mapAnswerListToDto(List<Answer> answers, Long questionId) {
         List<AnswerDto> answersDto = new ArrayList<>(answers.size());
         for (Answer a : answers) {
-            answersDto.add(answerToDto(a, questionId));
+            answersDto.add(mapAnswerToDto(a, questionId));
         }
         return answersDto;
     }
 
     @Override
-    public AnswerDto answerToDto(Answer answer, Long questionId) {
+    public AnswerDto mapAnswerToDto(Answer answer, Long questionId) {
         AnswerDto temp = new AnswerDto();
         temp.setId(answer.getId());
         temp.setAnswer(answer.getAnswer());
         temp.setQuestionId(questionId);
+        return temp;
+    }
+
+    @Override
+    public List<Answer> mapAnswerDtoPostListToAnswer(List<AnswerDtoPost> answersDtoPost, Survey survey) {
+        if(answersDtoPost == null || answersDtoPost.size() == 0) {
+            return Collections.emptyList();
+        }
+        List<Question> questions = survey.getQuestions().stream().toList();
+        List<Answer> answers = new ArrayList<>(answersDtoPost.size());
+        for(AnswerDtoPost a: answersDtoPost) {
+            Question question = (Question) questions.stream().filter(q -> Objects.equals(q.getId(), a.getQuestionId())).toArray()[0];
+            answers.add(answersDtoPostToAnswer(a,question));
+        }
+
+        return answers;
+    }
+
+    private Answer answersDtoPostToAnswer(AnswerDtoPost answerDtoPost,Question question) {
+        Answer temp = new Answer();
+        temp.setAnswer(answerDtoPost.getAnswer());
+        temp.setQuestion(question);
+        return temp;
+    }
+
+    @Override
+    public Survey mapSurveyDtoToSurvey(SurveyDto survey) {
+        Survey temp = new Survey();
+        temp.setId(survey.getId());
+        temp.setTitle(survey.getTitle());
+        temp.setQuestions(mapQuestionDtoListToQuestionList(survey.getQuestions(),temp));
         return temp;
     }
 }

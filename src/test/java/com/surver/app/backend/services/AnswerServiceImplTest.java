@@ -5,10 +5,15 @@ import com.surver.app.backend.repository.AnswerRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +50,9 @@ class AnswerServiceImplTest {
     private String deleteQuestion;
     @Value("${sql.delete.answer}")
     private String deleteAnswer;
+
+    @Autowired
+    private Environment environment;
 
     @BeforeEach
     void beforeEach() {
@@ -109,10 +117,10 @@ class AnswerServiceImplTest {
     void addAllAnswers() {
         List<Answer> answers = new ArrayList<>();
         Answer answer1 = new Answer();
-        answer1.setQuestion(questionService.findById(10L));
+//        answer1.setQuestion(questionService.findById(10L));
         answer1.setAnswer("Test1");
         Answer answer2 = new Answer();
-        answer2.setQuestion(questionService.findById(20L));
+//        answer2.setQuestion(questionService.findById(20L));
         answer2.setAnswer("Test2");
         answers.add(answer1);
         answers.add(answer2);

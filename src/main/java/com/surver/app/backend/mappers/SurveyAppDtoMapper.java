@@ -11,25 +11,29 @@ import java.util.Set;
 
 public interface SurveyAppDtoMapper {
 
-    SurveyDto surveyToDto(Survey survey);
+    SurveyDto mapSurveyToDto(Survey survey);
 
-    SurveySlimDto surveyToDtoSlim(Survey survey);
+    SurveySlimDto mapSurveyToDtoSlim(Survey survey);
 
-    QuestionDto questionToDto(Question question, Long surveyId);
+    QuestionDto mapQuestionToDto(Question question, Long surveyId);
 
-    Set<QuestionDto> questionSetToDto(Set<Question> questions, Long surveyId);
+    Set<QuestionDto> mapQuestionSetToDto(Set<Question> questions, Long surveyId);
 
-    QuestionSlimDto questionToDtoSlim(Question question);
+    QuestionSlimDto mapQuestionToDtoSlim(Question question);
 
-    Survey mapSurveyDtoToSurvey(PostSurveyDto surveyDto);
+    Survey mapSurveyDtoPostToSurvey(SurveyDtoPost surveyDto);
 
     Set<Question> mapQuestionDtoListToQuestionList(Set<QuestionDto> questions,Survey survey);
 
-    AnswerDto answerToDto(Answer answer, Long questionId);
+    AnswerDto mapAnswerToDto(Answer answer, Long questionId);
 
-    List<AnswerDto> answerListToDto(List<Answer> answers, Long questionId);
+    List<AnswerDto> mapAnswerListToDto(List<Answer> answers, Long questionId);
 
-    SurveysDto surveysToListDtoSlim(List<Survey> surveys);
+    SurveysDto mapSurveysToListDtoSlim(List<Survey> surveys);
+
+    List<Answer> mapAnswerDtoPostListToAnswer(List<AnswerDtoPost> answers, Survey survey);
+
+    Survey mapSurveyDtoToSurvey(SurveyDto survey);
 
 
 }

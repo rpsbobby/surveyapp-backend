@@ -1,10 +1,9 @@
 package com.surver.app.backend.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.surver.app.backend.dto.PostSurveyDto;
+import com.surver.app.backend.dto.SurveyDtoPost;
 import com.surver.app.backend.dto.SurveyDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +93,7 @@ class SurveyControllerTest {
     @Test
     @Order(3)
     void addNewSurvey() throws Exception {
-        PostSurveyDto temp = new PostSurveyDto();
+        SurveyDtoPost temp = new SurveyDtoPost();
         temp.setTitle("Second");
         temp.setQuestions(Collections.emptySet());
         ObjectMapper mapper = new ObjectMapper();
