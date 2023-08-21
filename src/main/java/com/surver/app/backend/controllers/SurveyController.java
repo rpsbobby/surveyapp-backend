@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin()
 @RestController
 @RequestMapping("/survey")
 public class SurveyController {
@@ -42,35 +42,40 @@ public class SurveyController {
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<SurveyDto> findById(@PathVariable Long id) {
+        if (surveyService.findById(id) == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(mapper.surveyToDto(surveyService.findById(id)), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteSurveyById(@PathVariable Long id) {
+    public ResponseEntity<String> deleteSurveyById(@PathVariable Long id) {
+        if (surveyService.findById(id) == null) return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
         surveyService.deleteSurveyById(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 
     @DeleteMapping("/delete-question/{id}")
-    public void deleteQuestion(@PathVariable Long id) {
+    public ResponseEntity<String> deleteQuestion(@PathVariable Long id) {
+        if(questionService.findById(id) == null) return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
         questionService.deleteById(id);
+        return new ResponseEntity<>("Completed", HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public void addNewSurvey(@RequestBody PostSurveyDto survey) {
+    public void addNewSurvey(@RequestBody  PostSurveyDto survey) {
         surveyService.addSurvey(mapper.mapSurveyDtoToSurvey(survey));
     }
 
     @PostMapping("/update")
     public void updateSurvey(@RequestBody SurveyDto survey) {
         Survey temp = surveyService.findById(survey.getId());
-        temp.setName(survey.getName());
+        temp.setTitle(survey.getTitle());
         Set<Question> questions = mapper.mapQuestionDtoListToQuestionList(survey.getQuestions(), temp);
         temp.setQuestions(questions);
         surveyService.updateSurvey(temp);
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void setUp() {
         Question q1 = new Question("How Are You?");
         List<Answer> a1 = new ArrayList<>();
@@ -94,7 +99,7 @@ public class SurveyController {
         q3.setAnswers(a3);
         //survey
         Survey survey = new Survey();
-        survey.setName("First");
+        survey.setTitle("First");
         survey.addQuestion(q1);
         q1.setSurvey(survey);
         survey.addQuestion(q2);

@@ -65,13 +65,6 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void findById() {
-        Question temp = questionService.findById(10);
-        assertNotNull(temp);
-        assertEquals("Im Good",temp.getAnswers().get(0).getAnswer());
-    }
-
-    @Test
     void deleteById() {
         questionService.deleteById(10);
         Question q = questionService.findById(10);

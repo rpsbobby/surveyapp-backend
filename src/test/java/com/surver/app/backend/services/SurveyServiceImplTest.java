@@ -99,25 +99,25 @@ class SurveyServiceImplTest {
     @DisplayName("Test Add New Survey")
     void testAddNewSurvey() {
         Survey survey = new Survey();
-        survey.setName("Third");
+        survey.setTitle("Third");
         Survey test = service.addSurvey(survey);
         assertNotNull(test);
-        assertEquals(2, test.getId());
+        assertEquals(1, test.getId());
         Survey survey1 = new Survey();
-        survey.setName("Fourth");
+        survey.setTitle("Fourth");
         Survey test2 = service.addSurvey(survey1);
         assertNotNull(test);
-        assertEquals(3, test2.getId());
+        assertEquals(2, test2.getId());
     }
 
     @Test
     @DisplayName("Test Update Survey")
     void testUpdateSurvey() {
         Survey temp = service.findById(10);
-        temp.setName("Changed");
+        temp.setTitle("Changed");
         service.updateSurvey(temp);
         temp = service.findById(10);
-        assertEquals("Changed", temp.getName());
+        assertEquals("Changed", temp.getTitle());
     }
 
 
