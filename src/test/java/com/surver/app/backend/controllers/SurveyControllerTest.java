@@ -3,15 +3,21 @@ package com.surver.app.backend.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.surver.app.backend.dto.SurveyDtoPost;
-import com.surver.app.backend.dto.SurveyDto;
+import com.surver.app.backend.dto.surveydto.SurveyDtoPost;
+import com.surver.app.backend.dto.surveydto.SurveyDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -28,6 +34,10 @@ class SurveyControllerTest {
 
     @Autowired
     private JdbcTemplate jdbc;
+
+    @Autowired
+    private MockMvc mockMvc;
+
     @Value("${sql.insert.into.survey.1}")
     private String addSurvey1;
     @Value("${sql.insert.into.question.1}")
@@ -63,23 +73,23 @@ class SurveyControllerTest {
     }
 
 
-    @Autowired
-    private MockMvc mockMvc;
 
 
     @Test
+    @WithMockUser
     @Order(1)
     void findAll() throws Exception {
-        mockMvc.perform(get("/survey/findAll"))
+        mockMvc.perform(get("/api/survey/findAll"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.surveys", hasSize(1)));
     }
 
     @Test
+    @WithMockUser
     @Order(2)
     void findById() throws Exception {
-        mockMvc.perform(get("/survey/findById/10"))
+        mockMvc.perform(get("/api/survey/findById/10"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title", is("First")));
@@ -91,6 +101,7 @@ class SurveyControllerTest {
 
 
     @Test
+    @WithMockUser
     @Order(3)
     void addNewSurvey() throws Exception {
         SurveyDtoPost temp = new SurveyDtoPost();
@@ -100,12 +111,12 @@ class SurveyControllerTest {
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(temp );
-        mockMvc.perform(post("/survey/add")
+        mockMvc.perform(post("/api/survey/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/survey/findById/1"))
+        mockMvc.perform(get("/api/survey/findById/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title", is("Second")));
@@ -113,6 +124,7 @@ class SurveyControllerTest {
     }
 
     @Test
+    @WithMockUser
     @Order(4)
     void updateSurvey() throws Exception {
         SurveyDto temp = new SurveyDto();
@@ -123,33 +135,35 @@ class SurveyControllerTest {
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(temp );
-        mockMvc.perform(post("/survey/update")
+        mockMvc.perform(post("/api/survey/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/survey/findById/10"))
+        mockMvc.perform(get("/api/survey/findById/10"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title", is("Test4")));
     }
 
     @Test
+    @WithMockUser
     @Order(99)
     void deleteQuestion() throws Exception {
-        mockMvc.perform(delete("/survey/delete-question/20"))
+        mockMvc.perform(delete("/api/survey/delete-question/20"))
                 .andExpect(status().isOk());
-        mockMvc.perform(delete("/survey/delete-question/20"))
+        mockMvc.perform(delete("/api/survey/delete-question/20"))
                 .andExpect(status().is4xxClientError());
 
     }
 
     @Test
+    @WithMockUser
     @Order(100)
     void deleteSurveyById() throws Exception {
-        mockMvc.perform(delete("/survey/delete/10"))
+        mockMvc.perform(delete("/api/survey/delete/10"))
                 .andExpect(status().isOk());
-        mockMvc.perform(delete("/survey/delete/-1"))
+        mockMvc.perform(delete("/api/survey/delete/-1"))
                 .andExpect(status().is4xxClientError());
     }
 

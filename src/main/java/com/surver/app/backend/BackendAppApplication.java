@@ -1,19 +1,12 @@
 package com.surver.app.backend;
 
-import com.surver.app.backend.entity.Answer;
-import com.surver.app.backend.entity.Question;
-import com.surver.app.backend.entity.Survey;
-import com.surver.app.backend.services.QuestionService;
-import com.surver.app.backend.services.SurveyService;
+import com.surver.app.backend.services.surveyservices.QuestionService;
+import com.surver.app.backend.services.surveyservices.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class BackendAppApplication {

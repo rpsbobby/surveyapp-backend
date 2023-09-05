@@ -1,28 +1,26 @@
 package com.surver.app.backend.controllers;
 
-import com.surver.app.backend.dto.AnswerDtoPost;
-import com.surver.app.backend.dto.SurveyDto;
-import com.surver.app.backend.dto.SurveyDtoPost;
-import com.surver.app.backend.dto.SurveysDto;
-import com.surver.app.backend.entity.Answer;
-import com.surver.app.backend.entity.Question;
-import com.surver.app.backend.entity.Survey;
-import com.surver.app.backend.mappers.SurveyAppDtoMapper;
-import com.surver.app.backend.services.AnswerService;
-import com.surver.app.backend.services.QuestionService;
-import com.surver.app.backend.services.SurveyService;
-import jakarta.annotation.PostConstruct;
+import com.surver.app.backend.dto.surveydto.AnswerDtoPost;
+import com.surver.app.backend.dto.surveydto.SurveyDto;
+import com.surver.app.backend.dto.surveydto.SurveyDtoPost;
+import com.surver.app.backend.dto.surveydto.SurveysDto;
+import com.surver.app.backend.entity.surveyentities.Answer;
+import com.surver.app.backend.entity.surveyentities.Question;
+import com.surver.app.backend.entity.surveyentities.Survey;
+import com.surver.app.backend.mappers.surveymappers.SurveyAppDtoMapper;
+import com.surver.app.backend.services.surveyservices.AnswerService;
+import com.surver.app.backend.services.surveyservices.QuestionService;
+import com.surver.app.backend.services.surveyservices.SurveyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @CrossOrigin()
 @RestController
-@RequestMapping("/survey")
+@RequestMapping("/api/survey")
 public class SurveyController {
 
     private SurveyAppDtoMapper mapper;
@@ -81,7 +79,7 @@ public class SurveyController {
         answerService.addAllAnswers(temp);
     }
 
-//        @PostConstruct
+    //        @PostConstruct
     public void setUp() {
         Question q1 = new Question("How Are You?");
         List<Answer> a1 = new ArrayList<>();
