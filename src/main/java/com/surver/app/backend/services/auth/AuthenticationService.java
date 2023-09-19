@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -36,8 +38,7 @@ public class AuthenticationService {
                     .build();
             repository.save(user);
         }
-        String jwtToken = service.generateJwtToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return generateAuthenticationResponse(user);
     }
 
 
@@ -50,7 +51,12 @@ public class AuthenticationService {
                 )
         );
         User user = repository.findByEmail(request.getEmail()).orElseThrow();
+        return generateAuthenticationResponse(user);
+    }
+
+    private AuthenticationResponse generateAuthenticationResponse(User user) {
         String jwtToken = service.generateJwtToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        Date expiration = service.extractExpiration(jwtToken);
+        return AuthenticationResponse.builder().token(jwtToken).expiration(expiration).build();
     }
 }
