@@ -37,8 +37,15 @@ public class AuthenticationService {
                     .role(Role.USER)
                     .build();
             repository.save(user);
+            return generateAuthenticationResponse(user);
+        } else {
+            AuthenticationRequest authenticationRequest = new AuthenticationRequest();
+            authenticationRequest.setEmail(request.getEmail());
+            authenticationRequest.setPassword(request.getPassword());
+            return authenticate(authenticationRequest);
+
         }
-        return generateAuthenticationResponse(user);
+
     }
 
 

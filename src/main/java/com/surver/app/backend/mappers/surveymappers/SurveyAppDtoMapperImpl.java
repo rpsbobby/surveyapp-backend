@@ -54,6 +54,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
         Survey temp = new Survey();
 
         temp.setTitle(surveyDto.getTitle());
+        temp.setCreator(surveyDto.getCreator());
         Set<Question> questions = new HashSet<>();
         for (QuestionDto q : surveyDto.getQuestions()) {
             Question question = new Question();
@@ -116,6 +117,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
         SurveyDto temp = new SurveyDto();
         temp.setId(survey.getId());
         temp.setTitle(survey.getTitle());
+        temp.setCreator(survey.getCreator());
         Set<Question> questions = survey.getQuestions();
         temp.setQuestions(mapQuestionSetToDto(survey.getQuestions(), temp.getId()));
         return temp;
@@ -189,6 +191,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
         Survey temp = new Survey();
         temp.setId(survey.getId());
         temp.setTitle(survey.getTitle());
+        temp.setCreator(survey.getCreator());
         temp.setQuestions(mapQuestionDtoListToQuestionList(survey.getQuestions(),temp));
         return temp;
     }

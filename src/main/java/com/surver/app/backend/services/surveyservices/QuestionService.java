@@ -12,6 +12,8 @@ public interface QuestionService {
 
     void deleteById(long id);
 
+    void deleteAllBySurveyId(Long surveyId);
+
     void update(Question question);
 
 

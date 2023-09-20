@@ -22,6 +22,8 @@ public class Survey {
     private Long id;
     @Column(name = "title")
     private String title;
+    @Column(name = "creator")
+    private String creator;
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Question> questions;
 

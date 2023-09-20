@@ -14,4 +14,6 @@ public class SurveyDtoPost {
     private String title;
     @JsonProperty("questions")
     private Set<QuestionDto> questions;
+    @JsonProperty("creator")
+    private String creator;
 }

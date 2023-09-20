@@ -41,6 +41,12 @@ public class QuestionServiceImpl implements QuestionService {
         questionDao.delete(question);
     }
 
+    @Transactional
+    @Override
+    public void deleteAllBySurveyId(Long surveyId) {
+        questionDao.deleteAll(findAllBySurveyId(surveyId));
+    }
+
     @Override
     @Transactional
     public void update(Question question) {

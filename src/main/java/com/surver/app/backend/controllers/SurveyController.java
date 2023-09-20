@@ -67,6 +67,7 @@ public class SurveyController {
 
     @PostMapping("/update")
     public void updateSurvey(@RequestBody SurveyDto survey) {
+        questionService.deleteAllBySurveyId(survey.getId());
         surveyService.updateSurvey(mapper.mapSurveyDtoToSurvey(survey));
     }
 
