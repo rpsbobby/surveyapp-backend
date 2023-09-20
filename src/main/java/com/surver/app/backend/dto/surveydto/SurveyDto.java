@@ -17,4 +17,6 @@ public class SurveyDto {
     private String title;
     @JsonProperty("questions")
     private Set<QuestionDto> questions;
+    @JsonProperty("creator")
+    private String creator;
 }
