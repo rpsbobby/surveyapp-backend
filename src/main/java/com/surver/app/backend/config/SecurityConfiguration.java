@@ -2,6 +2,7 @@ package com.surver.app.backend.config;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,6 +23,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+
     private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
@@ -34,7 +36,9 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(config -> {
+                    System.out.println("Configuration");
                     config.configurationSource(corsConfigurationSource);
+//                    config.disable();
 
                 })
                 .authorizeHttpRequests(config -> {
