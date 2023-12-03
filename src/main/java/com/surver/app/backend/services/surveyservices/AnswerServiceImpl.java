@@ -2,6 +2,7 @@ package com.surver.app.backend.services.surveyservices;
 
 import com.surver.app.backend.entity.surveyentities.Answer;
 import com.surver.app.backend.repository.surveyrepositories.AnswerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,12 +11,12 @@ import java.util.List;
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-    private AnswerRepository answerRepository;
-
+    private final AnswerRepository answerRepository;
 
     public AnswerServiceImpl(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
     }
+
 
     @Override
     public List<Answer> findAllAnswersByQuestionId(Long questionId) {
@@ -24,8 +25,8 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public void addAnswer(Answer answer) {
-        answerRepository.save(answer);
+    public Answer addAnswer(Answer answer) {
+        return answerRepository.save(answer);
 
     }
 
@@ -45,7 +46,8 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public void deleteAnswerById(Long answerId) {
-        answerRepository.deleteById(answerId);
+
+         answerRepository.deleteById(answerId);
     }
 
     @Transactional

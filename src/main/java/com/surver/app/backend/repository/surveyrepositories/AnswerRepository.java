@@ -9,7 +9,9 @@ import java.util.List;
 @Repository
 public interface AnswerRepository extends CrudRepository<Answer, Long> {
 
+
     List<Answer> findAllByQuestionId(Long questionId);
+
     void deleteAllByQuestionId(Long questionId);
 
 }

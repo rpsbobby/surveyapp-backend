@@ -86,6 +86,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
 
     private Question mapQuestionDtoToQuestion(QuestionDto q,Survey survey) {
         Question temp = new Question();
+        System.out.println(q.getId());
         temp.setId(q.getId());
         temp.setQuestion(q.getQuestion());
         temp.setAnswers(mapAnswerDtoListToAnswerList(q.getAnswers(), temp));
@@ -172,7 +173,11 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
         List<Question> questions = survey.getQuestions().stream().toList();
         List<Answer> answers = new ArrayList<>(answersDtoPost.size());
         for(AnswerDtoPost a: answersDtoPost) {
-            Question question = (Question) questions.stream().filter(q -> Objects.equals(q.getId(), a.getQuestionId())).toArray()[0];
+            Question question = null;
+            for(Question q : questions) {
+                if(Objects.equals(q.getId(), a.getQuestionId())) question = q;
+            }
+            assert (question != null);
             answers.add(answersDtoPostToAnswer(a,question));
         }
 

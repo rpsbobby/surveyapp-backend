@@ -5,6 +5,7 @@ import com.surver.app.backend.dto.surveydto.SurveyDto;
 import com.surver.app.backend.dto.surveydto.SurveyDtoPost;
 import com.surver.app.backend.dto.surveydto.SurveysDto;
 import com.surver.app.backend.entity.surveyentities.Answer;
+import com.surver.app.backend.entity.surveyentities.Question;
 import com.surver.app.backend.entity.surveyentities.Survey;
 import com.surver.app.backend.mappers.surveymappers.SurveyAppDtoMapper;
 import com.surver.app.backend.services.surveyservices.AnswerService;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -61,16 +63,31 @@ public class SurveyController {
 
     @PostMapping("/add")
     public void addNewSurvey(@RequestBody SurveyDtoPost survey) {
-        surveyService.addSurvey(mapper.mapSurveyDtoPostToSurvey(survey));
+        surveyService.save(mapper.mapSurveyDtoPostToSurvey(survey));
     }
 
     @PostMapping("/update")
+    //todo need to filter questions and delete them separate
     public void updateSurvey(@RequestBody SurveyDto survey) {
-        questionService.deleteAllBySurveyId(survey.getId());
-        surveyService.updateSurvey(mapper.mapSurveyDtoToSurvey(survey));
+        Survey temp = mapper.mapSurveyDtoToSurvey(survey);
+        Survey updated = surveyService.findById(survey.getId());
+        updated.setCreator(temp.getCreator());
+        updated.setTitle(temp.getTitle());
+        List<Question> toDelete = new ArrayList<>(survey.getQuestions().size());
+        for (Question q: updated.getQuestions()) {
+            if(!temp.getQuestions().contains(q)) {
+//                q.setSurvey(null);
+                questionService.deleteById(q.getId());
+            }
+        }
+//        questionService.deleteAll(toDelete);
+        updated.setQuestions(temp.getQuestions());
+
+//        questionService.deleteAllBySurveyId(survey.getId());
+        surveyService.updateSurvey(updated);
     }
 
-    @PostMapping("/{surveyId}/add-answers")
+    @PostMapping("/add-answers/{surveyId}")
     public void addAnswers(@PathVariable Long surveyId, @RequestBody List<AnswerDtoPost> answers) {
         Survey survey = surveyService.findById(surveyId);
         List<Answer> temp = mapper.mapAnswerDtoPostListToAnswer(answers, survey);

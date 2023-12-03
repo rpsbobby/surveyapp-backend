@@ -12,7 +12,7 @@ public interface QuestionService {
 
     void deleteById(long id);
 
-    void deleteAllBySurveyId(Long surveyId);
+    void deleteAll(List<Question> questions);
 
     void update(Question question);
 

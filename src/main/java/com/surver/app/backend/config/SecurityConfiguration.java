@@ -36,10 +36,7 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(config -> {
-                    System.out.println("Configuration");
                     config.configurationSource(corsConfigurationSource);
-//                    config.disable();
-
                 })
                 .authorizeHttpRequests(config -> {
                     config.requestMatchers(mvc.pattern("/api/auth/**")).permitAll();

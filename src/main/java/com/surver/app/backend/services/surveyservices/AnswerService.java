@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface AnswerService {
     List<Answer> findAllAnswersByQuestionId(Long questionId);
-    void addAnswer(Answer answer);
+    Answer addAnswer(Answer answer);
     void addAllAnswers(List<Answer> answers);
     void updateAnswer(Answer answer);
     void deleteAnswerById(Long answerId);

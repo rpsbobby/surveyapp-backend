@@ -2,6 +2,7 @@ package com.surver.app.backend.services.surveyservices;
 
 import com.surver.app.backend.entity.surveyentities.Survey;
 import com.surver.app.backend.repository.surveyrepositories.SurveyRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,40 +11,39 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+
 public class SurveyServiceImpl implements SurveyService {
 
-    private SurveyRepository dao;
+    private final SurveyRepository repository;
 
-    public SurveyServiceImpl(SurveyRepository dao) {
-        this.dao = dao;
+    public SurveyServiceImpl(SurveyRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public List<Survey> findAll() {
-        List<Survey> temp = new ArrayList<>();
-        dao.findAll().forEach(temp::add);
-        if (temp.size() == 0) return Collections.emptyList();
-        return temp;
+        return repository.findAll();
     }
 
     @Override
     public Survey findById(long id) {
-        Optional<Survey> temp = dao.findById(id);
-        return temp.orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     @Override
-    public Survey addSurvey(Survey survey) {
-        return dao.save(survey);
+    public Survey save(Survey survey) {
+        return repository.save(survey);
     }
 
     @Override
     public void updateSurvey(Survey survey) {
-        dao.save(survey);
+        repository.save(survey);
     }
 
     @Override
     public void deleteSurveyById(long id) {
-        dao.deleteById(id);
+        repository.deleteById(id);
     }
+
+
 }

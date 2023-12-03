@@ -24,7 +24,7 @@ public class Survey {
     private String title;
     @Column(name = "creator")
     private String creator;
-    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Question> questions;
 
     public void addQuestion(Question question) {
@@ -33,4 +33,9 @@ public class Survey {
     }
 
 
+    public void removeQuestion(Question question) {
+        if (question == null) throw new IllegalArgumentException("Question must be not null");
+
+        questions.remove(question);
+    }
 }

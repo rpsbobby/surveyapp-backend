@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -22,7 +24,7 @@ public class Question {
     @ManyToOne()
     @JoinColumn(name = "survey_id")
     private Survey survey;
-    @OneToMany(mappedBy = "question",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Answer> answers;
     @Column(name = "question")
     private String question;
@@ -32,7 +34,7 @@ public class Question {
     }
 
     public void addAnswer(Answer answer) {
-        if(answers == null) answers = new ArrayList<>();
+        if (answers == null) answers = new ArrayList<>();
         answers.add(answer);
     }
 }
