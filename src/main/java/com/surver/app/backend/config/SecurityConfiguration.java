@@ -27,8 +27,8 @@ public class SecurityConfiguration {
     private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspect) {
+        return new MvcRequestMatcher.Builder(introspect);
     }
 
     @Bean
@@ -39,8 +39,15 @@ public class SecurityConfiguration {
                     config.configurationSource(corsConfigurationSource);
                 })
                 .authorizeHttpRequests(config -> {
-                    config.requestMatchers(mvc.pattern("/api/auth/**")).permitAll();
-                    config.requestMatchers(mvc.pattern("/api/survey/**")).authenticated();
+                    config.requestMatchers(
+                            mvc.pattern("/api/auth/**"),
+                            mvc.pattern("/api/survey/**")
+                    ).permitAll();
+                    config.requestMatchers(
+                            mvc.pattern("/api/survey/delete/{surveyId}"),
+                            mvc.pattern("/api/survey/delete-question/{questionId}/survey/{surveyId}"),
+                            mvc.pattern("/api/survey/add")
+                    ).authenticated();
                     config.anyRequest().authenticated();
                 })
                 .sessionManagement(config -> {
