@@ -49,7 +49,6 @@ public class AuthenticationService {
     }
 
 
-
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -64,6 +63,12 @@ public class AuthenticationService {
     private AuthenticationResponse generateAuthenticationResponse(User user) {
         String jwtToken = service.generateJwtToken(user);
         Date expiration = service.extractExpiration(jwtToken);
-        return AuthenticationResponse.builder().token(jwtToken).expiration(expiration).build();
+        String username = service.extractUsername(jwtToken);
+        return AuthenticationResponse
+                .builder()
+                .token(jwtToken)
+                .expiration(expiration)
+                .username(username)
+                .build();
     }
 }

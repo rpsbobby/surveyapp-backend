@@ -10,6 +10,6 @@ public class AnswerDtoPost {
 
     @JsonProperty
     private String answer;
-    @JsonProperty("questionId") // question or question id
+    @JsonProperty("questionId")
     private Long questionId;
 }

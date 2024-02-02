@@ -18,6 +18,8 @@ public interface SurveyService {
 
     void deleteSurveyById(long id);
 
+    List<Survey> findAllByCreator(String creator);
+
 
 
 

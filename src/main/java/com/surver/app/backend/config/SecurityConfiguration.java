@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                     config.configurationSource(corsConfigurationSource);
                 })
                 .authorizeHttpRequests(config -> {
+
                     config.requestMatchers(
                             mvc.pattern("/api/auth/**"),
                             mvc.pattern("/api/survey/**")
@@ -46,7 +47,8 @@ public class SecurityConfiguration {
                     config.requestMatchers(
                             mvc.pattern("/api/survey/delete/{surveyId}"),
                             mvc.pattern("/api/survey/delete-question/{questionId}/survey/{surveyId}"),
-                            mvc.pattern("/api/survey/add")
+                            mvc.pattern("/api/survey/add"),
+                            mvc.pattern("/api/survey/getAllByCreator")
                     ).authenticated();
                     config.anyRequest().authenticated();
                 })

@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.headers.HeadersSecurityMarker;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.SSLEngineResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,8 @@ public class SurveyController {
         if(!validateSurveyOwnership(token,temp.getCreator()))
             return new ResponseEntity<>("Not Authorised", HttpStatus.UNAUTHORIZED);
         surveyService.deleteSurveyById(surveyId);
-        return new ResponseEntity<>("Survey successfully deleted", HttpStatus.OK);
+//        return new ResponseEntity<>("Survey successfully deleted", HttpStatus.OK);
+        return ResponseEntity.ok("Successful");
     }
 
 
@@ -63,8 +65,16 @@ public class SurveyController {
     public ResponseEntity<String> deleteQuestion(@RequestHeader Map<String, String> headers,
                                                  @PathVariable Long questionId,
                                                  @PathVariable Long surveyId) {
+
         if (questionService.findById(questionId) == null)
             return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+
+        String token = extractToken(headers.get("authorization"));
+        String creator = surveyService.findById(surveyId).getCreator();
+
+        if(!validateSurveyOwnership(token,creator))
+            return new ResponseEntity<>("Not Authorised", HttpStatus.UNAUTHORIZED);
+
         questionService.deleteById(questionId);
         return new ResponseEntity<>("Completed", HttpStatus.OK);
     }
@@ -88,6 +98,14 @@ public class SurveyController {
         Survey survey = surveyService.findById(surveyId);
         List<Answer> temp = mapper.mapAnswerDtoPostListToAnswer(answers, survey);
         answerService.addAllAnswers(temp);
+    }
+
+    @GetMapping("/getAllByCreator")
+    public ResponseEntity<SurveysDto> getAllByCreator(@RequestHeader Map<String, String> headers) {
+        String token = extractToken(headers.get("authorization"));
+        String creator = jwtService.extractUsername(token);
+        List<Survey> list = this.surveyService.findAllByCreator(creator);
+        return new ResponseEntity<>(mapper.mapSurveysToListDtoSlim(list), HttpStatus.OK);
     }
 
     private boolean validateSurveyOwnership(String token, String owner) {

@@ -20,7 +20,7 @@ public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "title")
+    @Column(name = "title", unique = true)
     private String title;
     @Column(name = "creator")
     private String creator;

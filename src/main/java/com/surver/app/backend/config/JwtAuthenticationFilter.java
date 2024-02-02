@@ -12,12 +12,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -33,12 +35,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+
         final String authenticationHeader = request.getHeader("Authorization");
+        final String[] path = request.getRequestURI().substring(1).split("/");
+        for (String s : path) {
+            System.out.println(s);
+        }
+
 
 
         final String jwtToken;
         final String userEmail;
-        if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
+        if (Objects.equals(path[1], "auth")
+                || Objects.equals(path[2], "findAll")
+                || Objects.equals(path[2],"findById")) {
             filterChain.doFilter(request, response);
             return;
         }

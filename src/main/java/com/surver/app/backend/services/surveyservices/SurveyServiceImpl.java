@@ -46,4 +46,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
 
+    public List<Survey> findAllByCreator(String creator) {
+        return this.repository.findAllByCreator(creator);
+    }
 }
