@@ -29,7 +29,7 @@ public class SurveyAppDtoMapperImpl implements SurveyAppDtoMapper {
         if (survey == null) return null;
         SurveySlimDto temp = new SurveySlimDto();
         temp.setId(survey.getId());
-        temp.setName(survey.getTitle());
+        temp.setTitle(survey.getTitle());
         Set<QuestionSlimDto> questionSlimDto = new HashSet<>(survey.getQuestions().size());
         for (Question q : survey.getQuestions()) {
             questionSlimDto.add(mapQuestionToDtoSlim(q));

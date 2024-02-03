@@ -38,9 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authenticationHeader = request.getHeader("Authorization");
         final String[] path = request.getRequestURI().substring(1).split("/");
-        for (String s : path) {
-            System.out.println(s);
-        }
+
 
 
 
@@ -48,6 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userEmail;
         if (Objects.equals(path[1], "auth")
                 || Objects.equals(path[2], "findAll")
+                || Objects.equals(path[2], "submit")
                 || Objects.equals(path[2],"findById")) {
             filterChain.doFilter(request, response);
             return;

@@ -13,6 +13,7 @@ import com.surver.app.backend.services.surveyservices.AnswerService;
 import com.surver.app.backend.services.surveyservices.QuestionService;
 import com.surver.app.backend.services.surveyservices.SurveyService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.headers.HeadersSecurityMarker;
@@ -56,7 +57,7 @@ public class SurveyController {
             return new ResponseEntity<>("Not Authorised", HttpStatus.UNAUTHORIZED);
         surveyService.deleteSurveyById(surveyId);
 //        return new ResponseEntity<>("Survey successfully deleted", HttpStatus.OK);
-        return ResponseEntity.ok("Successful");
+        return ResponseEntity.ok(jsonWrapper("Successfully Deleted"));
     }
 
 
@@ -67,16 +68,16 @@ public class SurveyController {
                                                  @PathVariable Long surveyId) {
 
         if (questionService.findById(questionId) == null)
-            return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(jsonWrapper("Not Found"), HttpStatus.NOT_FOUND);
 
         String token = extractToken(headers.get("authorization"));
         String creator = surveyService.findById(surveyId).getCreator();
 
         if(!validateSurveyOwnership(token,creator))
-            return new ResponseEntity<>("Not Authorised", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(jsonWrapper("Not Authorised"), HttpStatus.UNAUTHORIZED);
 
         questionService.deleteById(questionId);
-        return new ResponseEntity<>("Completed", HttpStatus.OK);
+        return new ResponseEntity<>(jsonWrapper("Completed"), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -86,10 +87,10 @@ public class SurveyController {
         String creator = survey.getCreator();
 
         if(!validateSurveyOwnership(token,creator))
-            return new ResponseEntity<>("Not Authorised", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(jsonWrapper("Not Authorised"), HttpStatus.UNAUTHORIZED);
 
         surveyService.save(mapper.mapSurveyDtoPostToSurvey(survey));
-        return new ResponseEntity<>("Successfully added", HttpStatus.OK);
+        return ResponseEntity.ok(jsonWrapper("Added Successfully"));
     }
 
 
@@ -116,4 +117,8 @@ public class SurveyController {
         return authorizationHeader.substring(7);
     }
 
+
+    private String jsonWrapper(String s) {
+        return "{\"message\":\"" + s + "\"}";
+    }
 }
